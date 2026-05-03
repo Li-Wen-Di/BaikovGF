@@ -1,0 +1,2 @@
+tadpoleOneLoop$src$8 = <|"Family" -> "Tadpole", "Slug" -> "tadpole", "ProblemID" -> 2, "SourceID" -> 5007, "SourcePowers" -> {8}, "MasterCoefficients" -> <|"1" -> <|"MasterID" -> 2128, "MasterPowers" -> {1}, "Coefficient" -> (-645120 + 836352*d - 420224*d^2 + 108304*d^3 - 15680*d^4 + 1288*d^5 - 56*d^6 + d^7)/(645120*m^7)|>|>|>;
+tadpoleOneLoop$src$8$to$1 = (-645120 + 836352*d - 420224*d^2 + 108304*d^3 - 15680*d^4 + 1288*d^5 - 56*d^6 + d^7)/(645120*m^7);

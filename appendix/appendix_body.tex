@@ -1,0 +1,104 @@
+\section*{Repository and code availability}
+The full source code is maintained in a public Git repository to make the
+workflow reproducible and auditable.
+
+Repository URL: \url{https://github.com/Li-Wen-Di/BaikovGF}
+
+The repository includes the Wolfram Language package, the external backend,
+and example notebooks and tests. A clone of the repository is sufficient to
+run the package on a new machine, subject to the software dependencies listed
+below.
+
+\section*{Implementation language (Mathematica/Wolfram Language)}
+The implementation is written in Wolfram Language (Mathematica), with the main
+package file stored under \texttt{BaikovGF/BaikovGF.wl}. The code is distributed
+as plain text \texttt{.wl} and \texttt{.mma} files so it can be inspected and
+versioned in Git without extra tooling.
+
+To load the package from a local clone:
+\begin{verbatim}
+projectRoot = "/path/to/this/repository";
+Get[FileNameJoin[{projectRoot, "BaikovGF", "BaikovGF.wl"}]];
+Needs["BaikovGF`"];
+\end{verbatim}
+
+This loads the symbols into the current session and makes the public interface
+available for analytic workflows.
+
+\section*{External dependency: python-flint}
+Some simplification stages are delegated to a lightweight Python backend that
+uses \texttt{python-flint} for fast rational operations. The package prefers a
+project-local virtual environment named \texttt{.venv-flint} in the repository
+root. If it is not present, the package falls back to the system Python and
+checks whether the \texttt{flint} module can be imported.
+
+We provide platform-specific setup scripts that create \texttt{.venv-flint} and
+install \texttt{python-flint}:
+\begin{itemize}
+  \item Windows: \texttt{external/setup\_flint\_env.ps1}
+  \item Linux: \texttt{external/setup\_flint\_env\_linux.sh}
+  \item macOS: \texttt{external/setup\_flint\_env\_macos.sh}
+\end{itemize}
+
+These scripts are designed to be run from the repository root and do not require
+manual path edits. They install a private dependency set within the repository
+so that the environment can be recreated by other users without changing system
+packages.
+
+\section*{Backend availability check}
+The package provides a built-in check that verifies the external backend. It
+detects the Python executable, tests \texttt{import flint}, and runs a minimal
+round-trip simplification:
+\begin{verbatim}
+CheckBaikovExternalBackend[]
+\end{verbatim}
+
+If the check reports an error, the most common fix is to run the appropriate
+setup script listed above and re-run the check.
+
+\section*{Public interface (core functions)}
+The following functions constitute the public interface used in the paper:
+\begin{itemize}
+  \item \texttt{SP[p, q]}: symbolic scalar product used to define kinematics.
+  \item \texttt{CreateFeynmanIntegral[...]}: construct a family association from
+    loop/external momenta, propagators, and kinematic rules.
+  \item \texttt{BuildBaikovGeneratingFunction[...]}: build a generating-function
+    object for the requested target powers.
+  \item \texttt{ExtractBaikovCoefficient[...]}: extract a single unsimplified
+    coefficient from a generating function.
+  \item \texttt{ExtractBaikovCoefficientBatch[...]}: extract a list of
+    coefficients in a single call.
+  \item \texttt{SimplifyBaikovCoefficient[...]}: simplify one coefficient, using
+    internal algebra and (optionally) the external backend.
+  \item \texttt{SimplifyBaikovCoefficientBatch[...]}: simplify a list of
+    coefficients.
+  \item \texttt{CheckBaikovExternalBackend[]}: verify that the Python/FLINT
+    backend is available and functional.
+\end{itemize}
+
+\section*{Minimal reproducible workflow}
+The following outline shows the minimal sequence used in analytic runs:
+\begin{verbatim}
+projectRoot = "/path/to/this/repository";
+Get[FileNameJoin[{projectRoot, "BaikovGF", "BaikovGF.wl"}]];
+Needs["BaikovGF`"];
+
+family = CreateFeynmanIntegral[
+  "LoopMomenta" -> {...},
+  "ExternalMomenta" -> {...},
+  "Propagators" -> {...},
+  "AuxiliaryPropagators" -> {...},
+  "KinematicRules" -> {...},
+  "DimensionSymbol" -> d
+];
+
+gf = BuildBaikovGeneratingFunction[family, targetPowers];
+raw = ExtractBaikovCoefficient[gf, sourcePowers];
+res = SimplifyBaikovCoefficient[raw];
+
+res["Coefficient"]
+\end{verbatim}
+
+This sequence isolates the construction, extraction, and simplification stages
+that are reported in the paper. When the external backend is available, the
+final rational simplification is delegated automatically.

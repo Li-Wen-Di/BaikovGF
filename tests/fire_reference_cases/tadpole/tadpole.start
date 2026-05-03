@@ -1,0 +1,26 @@
+Null
+ExampleDimension[0] = 1
+ 
+ProblemNumber = 0
+ 
+SBasisL[0, {-1}] = 0
+ 
+SBasisL[0, {1}] = 0
+ 
+SBasis0L[0] = 1
+ 
+SBasis0D[0, 1] = {{0}, {1}}
+ 
+SBasis0C[0, 1, {0}] = {{-2, 1}, {d, 0}}
+ 
+SBasis0C[0, 1, {1}] = {{-2*m, 1}}
+ 
+SBasisS[0] = {{{1}, {1}, {0}}}
+ 
+SBasisR[0, {-1}] = True
+ 
+SBasisR[0, {1}] = False
+ 
+SBasisRL[0] = 0
+ 
+HPI[0] = {}

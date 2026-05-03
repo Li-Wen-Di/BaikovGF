@@ -1,0 +1,4 @@
+hqTriangleOneLoop$src$1$2$2 = <|"Family" -> "One-Loop Heavy-Quark Triangle", "Slug" -> "hq_triangle_1loop", "ProblemID" -> 2, "SourceID" -> 9002000001, "SourcePowers" -> {1, 2, 2}, "MasterCoefficients" -> <|"0_1_1" -> <|"MasterID" -> 2127128128, "MasterPowers" -> {0, 1, 1}, "Coefficient" -> ((-15 + 8*d - d^2)*s*t + (-30 + 16*d - 2*d^2)*u^2)/(2*s^2*u^3)|>, "1_1_0" -> <|"MasterID" -> 2128128127, "MasterPowers" -> {1, 1, 0}, "Coefficient" -> (-60 + 32*d - 4*d^2)/(s^2*t)|>, "1_1_1" -> <|"MasterID" -> 2128128128, "MasterPowers" -> {1, 1, 1}, "Coefficient" -> ((-40 + 18*d - 2*d^2)*u)/(s^2*t)|>|>|>;
+hqTriangleOneLoop$src$1$2$2$to$0$1$1 = ((-15 + 8*d - d^2)*s*t + (-30 + 16*d - 2*d^2)*u^2)/(2*s^2*u^3);
+hqTriangleOneLoop$src$1$2$2$to$1$1$0 = (-60 + 32*d - 4*d^2)/(s^2*t);
+hqTriangleOneLoop$src$1$2$2$to$1$1$1 = ((-40 + 18*d - 2*d^2)*u)/(s^2*t);

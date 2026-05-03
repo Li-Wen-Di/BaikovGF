@@ -1,0 +1,194 @@
+(* Content-type: application/vnd.wolfram.cdf.text *)
+
+(*** Wolfram CDF File ***)
+(* http://www.wolfram.com/cdf *)
+
+(* CreatedBy='Wolfram 14.3' *)
+
+(*************************************************************************)
+(*                                                                       *)
+(*                                                                       *)
+(*  This file was created under the Wolfram Enterprise licensing terms.  *)
+(*                                                                       *)
+(*       For additional information concerning CDF licensing see:        *)
+(*                                                                       *)
+(*        www.wolfram.com/cdf/adopting-cdf/licensing-options.html        *)
+(*                                                                       *)
+(*                                                                       *)
+(*                                                                       *)
+(*************************************************************************)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[      1060,         20]
+NotebookDataLength[      7643,        172]
+NotebookOptionsPosition[      6342,        150]
+NotebookOutlinePosition[      6741,        167]
+CellTagsIndexPosition[      6698,        164]
+WindowTitle->Example: Tadpole
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell["Example: Tadpole", "Title",ExpressionUUID->"4c4ffe41-12d3-ad47-8a5f-c4fbba0b2e41"],
+
+Cell["Load Package", "Section",ExpressionUUID->"c72a3127-7245-1f4d-9da6-bc2c66d57cdf"],
+
+Cell["\<\
+This step loads the package and exposes the public interface used below.\
+\>", "Text",ExpressionUUID->"c7bc0549-7f60-1745-9029-7123e386d749"],
+
+Cell[BoxData[
+ HoldComplete[Get[
+    FileNameJoin[{
+      DirectoryName[
+       NotebookDirectory[]], "BaikovGF", "BaikovGF.wl"}]]; Null, Null, 
+  Needs["BaikovGF`"]; Null]], "Input",ExpressionUUID->"9a631c04-fd66-7e42-\
+9bda-0663a89e8f98"],
+
+Cell["Setup", "Section",ExpressionUUID->"865e1037-0b02-f945-a07e-9fd8cd62fa24"],
+
+Cell["\<\
+This step fixes the source-power rule, target powers, and integral-family \
+object for the example.\
+\>", "Text",ExpressionUUID->"5dba7144-dec3-b04c-b363-af50a2171b34"],
+
+Cell[BoxData[
+ HoldComplete[
+ Null, $CellContext`sourcePowerRule = {$CellContext`a1 -> 8}; Null, Null, 
+  Null, $CellContext`sourcePowerVectorPackage = 
+   ReplaceAll[{$CellContext`a1}, $CellContext`sourcePowerRule]; 
+  Null, $CellContext`sourcePowerVector = \
+$CellContext`sourcePowerVectorPackage; 
+  Null, $CellContext`sourcePowerFileTag = StringRiffle[
+     Map[ToString, $CellContext`sourcePowerVector], "_"]; 
+  Null, $CellContext`sourcePowerVarTag = StringRiffle[
+     Map[ToString, $CellContext`sourcePowerVector], "$"]; Null, Null, 
+  Null, $CellContext`target1 = {1}; Null, Null, 
+  Null, $CellContext`family = 
+   BaikovGF`CreateFeynmanIntegral[
+    "LoopMomenta" -> {$CellContext`k1}, "ExternalMomenta" -> {}, 
+     "Propagators" -> {-$CellContext`m + 
+       BaikovGF`SP[$CellContext`k1, $CellContext`k1]}, 
+     "AuxiliaryPropagators" -> {}, "KinematicRules" -> {}, 
+     "DimensionSymbol" -> $CellContext`d]; Null, Null, 
+  Null, $CellContext`fireSourceFile = FileNameJoin[{
+      DirectoryName[
+       NotebookDirectory[]], "tests", "fire_reference_cases", "tadpole", 
+      "coefficients", "tadpole__src_" <> $CellContext`sourcePowerFileTag <> 
+      ".wl"}]; Null]], "Input",ExpressionUUID->"18943b4b-8164-734c-8121-\
+57b560318e33"],
+
+Cell["Top Target {1}", "Section",ExpressionUUID->"d7ea5806-feab-7244-bbd9-6f17a698095d"],
+
+Cell["\<\
+This step builds the generating function for the top target and returns the \
+runtime.\
+\>", "Text",ExpressionUUID->"a96354d4-442e-4a4c-830f-c31a262a2693"],
+
+Cell[BoxData[
+ HoldComplete[{$CellContext`tBuild1, $CellContext`gf1} = AbsoluteTiming[
+     BaikovGF`BuildBaikovGeneratingFunction[$CellContext`family, \
+$CellContext`target1]]; Null, $CellContext`tBuild1]], "Input",ExpressionUUID->\
+"8645a263-c481-9e45-941b-d7d3bdd02e42"],
+
+Cell[BoxData["0.0073958`"], "Output",ExpressionUUID->"59e80e48-3f8e-ee42-8c40-825ccf3e5236"],
+
+Cell["\<\
+t-variable mapping for the generating function above:
+t$1102 <-> D1 = -m + SP[k1, k1]\
+\>", "Text",ExpressionUUID->"bab44174-8f5e-5a4a-aa74-2a200a6803e7"],
+
+Cell["\<\
+This step extracts the unsimplified coefficient and returns the runtime.\
+\>", "Text",ExpressionUUID->"c4898805-5e22-5b43-90d9-c4223f95654e"],
+
+Cell[BoxData[
+ HoldComplete[{$CellContext`tExtract1, $CellContext`raw1} = AbsoluteTiming[
+     BaikovGF`ExtractBaikovCoefficient[$CellContext`gf1, 
+      ReplaceAll[{$CellContext`a1}, $CellContext`sourcePowerRule]]]; 
+  Null, $CellContext`tExtract1]], "Input",ExpressionUUID->"ea544bf1-9e91-0a4d-\
+b8c4-a1c969691660"],
+
+Cell[BoxData["0.0028087`"], "Output",ExpressionUUID->"dbd1fbe2-d37a-7c4f-9036-0fb90418829a"],
+
+Cell["\<\
+This step simplifies the extracted coefficient and returns the runtime.\
+\>", "Text",ExpressionUUID->"5b4e57ac-2a1a-7743-9e6f-27dc8803f143"],
+
+Cell[BoxData[
+ HoldComplete[{$CellContext`tSimplify1, $CellContext`res1} = AbsoluteTiming[
+     BaikovGF`SimplifyBaikovCoefficient[$CellContext`raw1]]; 
+  Null, $CellContext`tSimplify1]], "Input",ExpressionUUID->"233fbb60-a2cc-\
+a145-bc34-cc1f6b901fdf"],
+
+Cell[BoxData["0.0063809`"], "Output",ExpressionUUID->"c03de931-7d5d-424a-a9f9-0c7069691ec4"],
+
+Cell["Compare to FIRE", "Subsection",ExpressionUUID->"d705f081-bf43-fd42-a2f2-3f4ad44bf292"],
+
+Cell[BoxData[
+ HoldComplete[{$CellContext`tCompare1, $CellContext`compare1} = 
+   AbsoluteTiming[
+    Get[$CellContext`fireSourceFile]; $CellContext`fireCoeff1 = 
+      Symbol["tadpoleOneLoop$src$" <> $CellContext`sourcePowerVarTag <> 
+        "$to$1"]; Simplify[Cancel[
+         Together[$CellContext`res1[
+           "Coefficient"] - $CellContext`fireCoeff1]] == 0]]; Null, <|
+  "Time" -> $CellContext`tCompare1, 
+   "MatchQ" -> $CellContext`compare1|>]], "Input",ExpressionUUID->"4f2be1c5-\
+abb8-4045-8b25-93857ece707a"],
+
+Cell[BoxData[
+ RowBox[{"\[LeftAssociation]", 
+  RowBox[{
+   RowBox[{"\<\"Time\"\>", "\[Rule]", "0.0010661`"}], ",", 
+   RowBox[{"\<\"MatchQ\"\>", "\[Rule]", "True"}]}], 
+  "\[RightAssociation]"}]], "Output",ExpressionUUID->"9700f81a-f085-b44f-b518-\
+9f6ce2c77a51"]
+},
+WindowTitle->"Example: Tadpole",
+Magnification:>1.1 Inherited,
+FrontEndVersion->"14.3 for Microsoft Windows (64-bit) (2025\:5e747\:67088\
+\:65e5)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"bcc9be98-64de-dc49-98df-12b6ce822ede"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[1490, 34, 88, 0, 77, "Title",ExpressionUUID->"4c4ffe41-12d3-ad47-8a5f-c4fbba0b2e41"],
+Cell[1581, 36, 86, 0, 77, "Section",ExpressionUUID->"c72a3127-7245-1f4d-9da6-bc2c66d57cdf"],
+Cell[1670, 38, 151, 2, 77, "Text",ExpressionUUID->"c7bc0549-7f60-1745-9029-7123e386d749"],
+Cell[1824, 42, 240, 6, 77, "Input",ExpressionUUID->"9a631c04-fd66-7e42-9bda-0663a89e8f98"],
+Cell[2067, 50, 79, 0, 77, "Section",ExpressionUUID->"865e1037-0b02-f945-a07e-9fd8cd62fa24"],
+Cell[2149, 52, 178, 3, 77, "Text",ExpressionUUID->"5dba7144-dec3-b04c-b363-af50a2171b34"],
+Cell[2330, 57, 1250, 24, 77, "Input",ExpressionUUID->"18943b4b-8164-734c-8121-57b560318e33"],
+Cell[3583, 83, 88, 0, 77, "Section",ExpressionUUID->"d7ea5806-feab-7244-bbd9-6f17a698095d"],
+Cell[3674, 85, 165, 3, 77, "Text",ExpressionUUID->"a96354d4-442e-4a4c-830f-c31a262a2693"],
+Cell[3842, 90, 273, 4, 77, "Input",ExpressionUUID->"8645a263-c481-9e45-941b-d7d3bdd02e42"],
+Cell[4118, 96, 92, 0, 77, "Output",ExpressionUUID->"59e80e48-3f8e-ee42-8c40-825ccf3e5236"],
+Cell[4213, 98, 164, 3, 77, "Text",ExpressionUUID->"bab44174-8f5e-5a4a-aa74-2a200a6803e7"],
+Cell[4380, 103, 151, 2, 77, "Text",ExpressionUUID->"c4898805-5e22-5b43-90d9-c4223f95654e"],
+Cell[4534, 107, 317, 5, 77, "Input",ExpressionUUID->"ea544bf1-9e91-0a4d-b8c4-a1c969691660"],
+Cell[4854, 114, 92, 0, 77, "Output",ExpressionUUID->"dbd1fbe2-d37a-7c4f-9036-0fb90418829a"],
+Cell[4949, 116, 150, 2, 77, "Text",ExpressionUUID->"5b4e57ac-2a1a-7743-9e6f-27dc8803f143"],
+Cell[5102, 120, 253, 4, 77, "Input",ExpressionUUID->"233fbb60-a2cc-a145-bc34-cc1f6b901fdf"],
+Cell[5358, 126, 92, 0, 77, "Output",ExpressionUUID->"c03de931-7d5d-424a-a9f9-0c7069691ec4"],
+Cell[5453, 128, 92, 0, 77, "Subsection",ExpressionUUID->"d705f081-bf43-fd42-a2f2-3f4ad44bf292"],
+Cell[5548, 130, 523, 10, 77, "Input",ExpressionUUID->"4f2be1c5-abb8-4045-8b25-93857ece707a"],
+Cell[6074, 142, 264, 6, 77, "Output",ExpressionUUID->"9700f81a-f085-b44f-b518-9f6ce2c77a51"]
+}
+]
+*)
+
+(* End of internal cache information *)

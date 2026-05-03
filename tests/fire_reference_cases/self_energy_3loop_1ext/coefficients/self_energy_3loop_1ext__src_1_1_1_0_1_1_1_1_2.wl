@@ -1,0 +1,2 @@
+selfEnergyThreeLoopOneExt$src$1$1$1$0$1$1$1$1$2 = <|"Family" -> "Three-Loop Self-Energy (One External Momentum)", "Slug" -> "self_energy_3loop_1ext", "ProblemID" -> 2, "SourceID" -> 111011112, "SourcePowers" -> {1, 1, 1, 0, 1, 1, 1, 1, 2}, "MasterCoefficients" -> <|"1_1_1_0_1_1_1_1_1" -> <|"MasterID" -> 111011111, "MasterPowers" -> {1, 1, 1, 0, 1, 1, 1, 1, 1}, "Coefficient" -> (-48*m^2 + 9*d*m^2 + 24*s - 5*d*s)/(12*m^2*(3*m^2 - s))|>|>|>;
+selfEnergyThreeLoopOneExt$src$1$1$1$0$1$1$1$1$2$to$1$1$1$0$1$1$1$1$1 = (-48*m^2 + 9*d*m^2 + 24*s - 5*d*s)/(12*m^2*(3*m^2 - s));
