@@ -1,27 +1,26 @@
-# external Directory Guide
+# `external` Directory Guide
 
 ## Purpose
 
 The `external/` directory contains the external rational-simplification backend used by the `BaikovGF` package.
 
-The main backend file is:
+The main backend file at present is:
 
 - [flint_simplify.py](flint_backend/flint_simplify.py)
 
-This backend is called by the final simplification stage of the package, mainly through `SimplifyBaikovCoefficient[...]`.
+This backend is mainly called in the final simplification stage of `SimplifyBaikovCoefficient[...]`.
 
-Without this directory:
+If this directory is missing:
 
 - `CreateFeynmanIntegral[...]` can still run.
 - `BuildBaikovGeneratingFunction[...]` can still run.
 - `ExtractBaikovCoefficient[...]` can still run.
-- The final external rational simplification used by `SimplifyBaikovCoefficient[...]` will not be available.
+- The final rational simplification in `SimplifyBaikovCoefficient[...]` that depends on the external backend will not be available.
 
 ## Directory Contents
 
-- [README.md](README.md): language index.
 - [README.en.md](README.en.md): this file.
-- [README.zh.md](README.zh.md): Chinese version.
+- [README.zh.md](README.zh.md): Chinese documentation.
 - [setup_flint_env.ps1](setup_flint_env.ps1): Windows setup script.
 - [setup_flint_env_linux.sh](setup_flint_env_linux.sh): Linux setup script.
 - [setup_flint_env_macos.sh](setup_flint_env_macos.sh): macOS setup script.
@@ -29,19 +28,19 @@ Without this directory:
 
 ## How the Package Finds Python
 
-The package prefers a project-local virtual environment:
+The package first looks for a project-local virtual environment under the repository root:
 
 - Windows: `.venv-flint\\Scripts\\python.exe`
 - macOS/Linux: `.venv-flint/bin/python`
 
 If that environment does not exist, the package falls back to the system `python`.
 
-This means that in normal use you do not need to configure an extra path manually, as long as one of the following is true:
+In normal use, no extra path configuration is needed as long as one of the following conditions is satisfied:
 
-1. `.venv-flint` exists in the project root and contains `python-flint`.
-2. Your system `python` can import `flint`.
+1. `.venv-flint` exists in the project root and has `python-flint` installed.
+2. The system `python` can directly `import flint`.
 
-## Setup Scripts
+## Setup Scripts for the Three Platforms
 
 ### Windows
 
@@ -49,19 +48,19 @@ Script:
 
 - [setup_flint_env.ps1](setup_flint_env.ps1)
 
-Recommended command:
+Recommended usage:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\external\setup_flint_env.ps1
 ```
 
-Use a specific Python launcher:
+Specify a Python launcher:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\external\setup_flint_env.ps1 -Python py
 ```
 
-Or a specific Python executable:
+Specify a Python executable:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\external\setup_flint_env.ps1 -Python "C:\Path\To\python.exe"
@@ -73,13 +72,13 @@ Script:
 
 - [setup_flint_env_linux.sh](setup_flint_env_linux.sh)
 
-Recommended command:
+Recommended usage:
 
 ```bash
 bash ./external/setup_flint_env_linux.sh
 ```
 
-Use a specific Python:
+Specify a Python executable:
 
 ```bash
 bash ./external/setup_flint_env_linux.sh python3.11
@@ -91,81 +90,76 @@ Script:
 
 - [setup_flint_env_macos.sh](setup_flint_env_macos.sh)
 
-Recommended command:
+Recommended usage:
 
 ```bash
 bash ./external/setup_flint_env_macos.sh
 ```
 
-Use a specific Python:
+Specify a Python executable:
 
 ```bash
 bash ./external/setup_flint_env_macos.sh python3.11
 ```
 
-## What the Setup Scripts Do
+## What These Scripts Do
 
-All three setup scripts do the same job for different platforms:
+The three scripts do the same job on different platforms:
 
-1. Create a project-local virtual environment named `.venv-flint`.
+1. Create a `.venv-flint` virtual environment in the project root.
 2. Upgrade `pip`, `setuptools`, and `wheel`.
 3. Install or upgrade `python-flint`.
-4. Run a minimal import test for `flint`.
+4. Run a minimal `flint` import test.
 
-## Minimal User Requirement
+## Minimal User Action
 
 If the user already has:
 
 - Mathematica / Wolfram Language
 - Python
 
-then the usual extra step is only:
+then the only additional step is usually:
 
 - run the setup script for the current platform
 
-## How to Verify the Backend
+## How to Verify That the Backend Works
 
-After setup, the script prints the Python executable and the installed `flint` path.
+After a successful setup, the script prints:
 
-You can also verify the backend from Wolfram Language:
+- the Python executable being used
+- the installation path of the `flint` module
+
+You can also run the following in Wolfram Language:
 
 ```wl
 CheckBaikovExternalBackend[]
 ```
 
-This checks:
+It checks:
 
-- which Python executable the package will use
+- which Python interpreter the package has selected
 - whether [flint_simplify.py](flint_backend/flint_simplify.py) exists
-- whether Python can import `flint`
+- whether Python can `import flint`
 - whether the backend can complete a minimal round-trip simplification test
 
 ## Common Cases
 
-### Only system Python exists
+### Only system Python is available and `python-flint` is not installed
 
-That is fine. The setup scripts are designed for exactly this case.
+This is the most common case. Just run the setup script for your platform.
 
 ### Multiple Python installations exist
 
-All three scripts let you choose which Python to use:
+All three scripts allow the Python executable to be specified manually:
 
 - Windows: `-Python ...`
-- macOS/Linux: first positional argument
+- macOS/Linux: the first positional argument
 
-### Manual setup instead of scripts
+### Manual installation instead of using the scripts
 
-That also works, as long as one of the following is true:
+That is also possible, as long as one of the following conditions is satisfied:
 
-1. `.venv-flint` exists in the project root and contains `python-flint`.
-2. System `python` can import `flint`.
+1. `.venv-flint` exists in the project root and has `python-flint` installed.
+2. The system `python` can directly `import flint`.
 
-The provided scripts are still the recommended path because they are the most reproducible.
-
-## Relation to tests and compare
-
-This directory is not the test directory and not the speed-comparison directory.
-
-It only provides the external simplification backend.
-
-However, if `tests/` or `compare/` run package paths that call `SimplifyBaikovCoefficient[...]`, they indirectly depend on the backend configured here.
+For reproducibility and stability, using the provided scripts is still recommended.

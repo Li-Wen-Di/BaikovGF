@@ -1,23 +1,27 @@
 # BaikovGF
 
-`BaikovGF` is a Wolfram Language package for analytic IBP reduction of Feynman integrals based on the Baikov generating-function method.
+`BaikovGF` is a Wolfram Language package for analytic IBP reduction of Feynman integrals based on the Baikov generating-function method. The corresponding paper is [arXiv:2504.02573, *Generating Function of Loop Reduction by Baikov Representation*](https://arxiv.org/abs/2504.02573).
 
-This repository contains:
+## Repository Layout
 
-- the main package
-- example notebooks
-- the Python/FLINT backend used by the package for rational simplification
-- analytic regression tests together with FIRE reference data
+- [BaikovGF/](BaikovGF/)
+  Main Wolfram Language package and package-level documentation.
+- [examples/](examples/)
+  Example notebooks, one notebook for each family.
+- [external/](external/)
+  Python/FLINT backend and setup scripts.
+- [tests/](tests/)
+  Reusable analytic regression scripts, FIRE reference tables, and test results.
 
 ## Requirements
 
-The package requires:
+This project requires:
 
 - Wolfram Language / Mathematica
 - Python 3
 - `python-flint`
 
-The Python/FLINT backend is part of the required runtime environment of the package.
+The Python/FLINT backend is used in the final rational-simplification stage of the package.
 
 ## Getting Started
 
@@ -48,7 +52,7 @@ Detailed setup notes:
 - [external/README.en.md](external/README.en.md)
 - [external/README.zh.md](external/README.zh.md)
 
-Before running the package, you can verify that FLINT has been configured correctly:
+After loading the package and before running reductions, you can use the following function in Mathematica to verify that FLINT has been configured correctly:
 
 ```wl
 CheckBaikovExternalBackend[]
@@ -63,7 +67,7 @@ Get[FileNameJoin[{projectRoot, "BaikovGF", "BaikovGF.wl"}]];
 
 ## Minimal Usage Example
 
-The following example uses the massive bubble family.
+The following example uses the massive bubble family and shows the basic workflow from family construction to the final reduction coefficient.
 
 ```wl
 projectRoot = "/path/to/this/repository";
@@ -91,24 +95,14 @@ res = SimplifyBaikovCoefficient[raw];
 res["Coefficient"]
 ```
 
-## Repository Layout
-
-- [BaikovGF/](BaikovGF/)
-  Main Wolfram Language package and package-level documentation.
-- [examples/](examples/)
-  Example notebooks, one notebook for each family.
-- [external/](external/)
-  Python/FLINT backend and setup scripts.
-- [tests/](tests/)
-  Reusable analytic regression scripts, FIRE reference tables, and test results.
-
 ## Examples
 
-The [examples/](examples/) directory contains one notebook for each family. These notebooks demonstrate:
+The [examples/](examples/) directory contains one notebook for each integral family. These notebooks demonstrate:
 
-- family construction
-- timings for build / extract / simplify
-- comparison against the corresponding FIRE reference coefficient
+- construction of the family object
+- construction of the generating function for a target master integral
+- extraction and simplification of the reduction coefficient
+- analytic comparison against the corresponding FIRE reference coefficient
 
 ## Tests
 

@@ -19,7 +19,6 @@
 
 ## 目录内容
 
-- [README.md](README.md)：语言入口页。
 - [README.en.md](README.en.md)：英文说明。
 - [README.zh.md](README.zh.md)：本文件。
 - [setup_flint_env.ps1](setup_flint_env.ps1)：Windows 初始化脚本。
@@ -164,11 +163,3 @@ CheckBaikovExternalBackend[]
 2. 系统 `python` 可以直接 `import flint`。
 
 但从可复现性和稳定性来看，仍然建议直接使用这里提供的脚本。
-
-## 与 `tests` 和 `compare` 的关系
-
-这个目录不是测试目录，也不是速度对比目录。
-
-它只负责提供外部化简后端。
-
-但是，如果 `tests/` 或 `compare/` 调用了 `SimplifyBaikovCoefficient[...]` 这一最终化简路径，那么它们会间接依赖这里配置好的后端环境。
