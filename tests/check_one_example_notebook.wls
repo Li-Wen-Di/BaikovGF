@@ -21,21 +21,19 @@ parseNotebookFile[path_String] := Module[{text, pos, held},
   held[[1]]
 ];
 
-extractInputStrings[nb_Notebook] := Cases[
-  nb,
-  Cell[content_, "Input", ___] :> Which[
+parseHeldInput[content_] := Module[{parsed},
+  parsed = Which[
+    MatchQ[content, BoxData[HoldComplete[__]]],
+      ToExpression[StringReplace[ToString[content[[1]], InputForm], "$CellContext`" -> ""], InputForm, HoldComplete],
     MatchQ[content, BoxData[_]],
-      StringReplace[ToString[content[[1]], InputForm], "$CellContext`" -> ""],
+      ToExpression[content[[1]], StandardForm, HoldComplete],
     StringQ[content],
-      StringReplace[content, "$CellContext`" -> ""],
+      ToExpression[StringReplace[content, "$CellContext`" -> ""], InputForm, HoldComplete],
     True,
-      "$Failed"
-  ],
-  Infinity
+      HoldComplete[$Failed]
+  ];
+  If[MatchQ[parsed, HoldComplete[HoldComplete[__]]], parsed[[1]], parsed]
 ];
-
-normalizeParsedInput[HoldComplete[inner_HoldComplete]] := inner;
-normalizeParsedInput[held_HoldComplete] := held;
 
 nb = parseNotebookFile[notebookPath];
 If[nb === $Failed || Head[nb] =!= Notebook,
@@ -43,17 +41,15 @@ If[nb === $Failed || Head[nb] =!= Notebook,
   Exit[1];
 ];
 
-inputStrings = extractInputStrings[nb];
-If[inputStrings === {} || MemberQ[inputStrings, "$Failed"],
-  Print[<|"Notebook" -> FileNameTake[notebookPath], "Status" -> "input-extract-failed"|> // InputForm];
-  Exit[1];
-];
-
 Get[packagePath];
 Needs["BaikovGF`"];
 
 Block[{$Context = "Global`", $ContextPath = {"System`", "Global`", "BaikovGF`"}},
-  heldInputs = normalizeParsedInput /@ (ToExpression[#, InputForm, HoldComplete] & /@ inputStrings);
+  heldInputs = Cases[nb, Cell[content_, "Input", ___] :> parseHeldInput[content], Infinity];
+  If[heldInputs === {} || MemberQ[heldInputs, HoldComplete[$Failed]],
+    Print[<|"Notebook" -> FileNameTake[notebookPath], "Status" -> "input-parse-failed"|> // InputForm];
+    Exit[1];
+  ];
   results = ReleaseHold /@ (Rest[heldInputs] /. HoldPattern[NotebookDirectory[]] :> notebookDir);
   compareResults = Select[results, AssociationQ[#] && KeyExistsQ[#, "MatchQ"] &];
 ];

@@ -18,36 +18,19 @@ SetAttributes[inputCell, HoldAll];
 inputCell[expr_] := Cell[BoxData @ ToBoxes[Unevaluated[expr]], "Input"];
 outputCell[expr_] := Cell[BoxData @ ToBoxes[expr], "Output"];
 
-extractDisplayTNames[expr_] := SortBy[
-  DeleteDuplicates @ Cases[
-    HoldComplete[expr],
-    s_Symbol /; StringMatchQ[SymbolName[s], "t$" ~~ DigitCharacter ..],
-    Infinity
-  ],
-  ToExpression[StringDrop[SymbolName[#], 2]] &
-];
-
-mappingCellTextForGF[family_Association, type_String, expr_] := Module[
-  {tNames, props, lines, pairCount},
-  tNames = SymbolName /@ extractDisplayTNames[expr];
+mappingTextForGF[family_Association, gf_Association] := Module[
+  {activeTVars, props, pairCount, lines},
+  activeTVars = gf["Internal", "FamilyData", "ActiveTVariables"];
   props = If[
-    type === "TypeI",
-    family["Input"]["Propagators"],
-    Join[family["Input"]["Propagators"], family["Input"]["AuxiliaryPropagators"]]
+    gf["Type"] === "TypeI",
+    family["Input", "Propagators"],
+    Join[family["Input", "Propagators"], family["Input", "AuxiliaryPropagators"]]
   ];
-  pairCount = Min[Length[tNames], Length[props]];
-  lines = Join[
-    {"t-variable mapping for the generating function above:"},
-    Table[
-      tNames[[i]] <> " <-> D" <> ToString[i] <> " = " <> ToString[InputForm[props[[i]] /. BaikovGF`SP -> SP]],
-      {i, pairCount}
-    ]
-  ];
-  If[type === "TypeI" && family["Input"]["AuxiliaryPropagators"] =!= {},
-    lines = Join[lines, {"", "Only the explicit propagators carry t-variables in this TypeI generating function."}]
-  ];
-  If[Length[tNames] =!= Length[props],
-    lines = Join[lines, {"", "Warning: the number of displayed t-variables does not match the expected propagator count."}]
+  pairCount = Min[Length[activeTVars], Length[props]];
+  lines = Table[
+    SymbolName[activeTVars[[i]]] <> " <-> D" <> ToString[i] <> " = " <>
+      ToString[InputForm[props[[i]] /. BaikovGF`SP -> SP]],
+    {i, pairCount}
   ];
   StringRiffle[lines, "\n"]
 ];
@@ -75,6 +58,7 @@ familyExpr = BaikovGF`CreateFeynmanIntegral[
 family = familyExpr;
 
 tBuildTop = AbsoluteTiming[gfTop = BaikovGF`BuildBaikovGeneratingFunction[family, topTarget];][[1]];
+mappingTop = mappingTextForGF[family, gfTop];
 tExtractTop = AbsoluteTiming[rawTop = BaikovGF`ExtractBaikovCoefficient[gfTop, {a1, a2} /. sourcePowerRule];][[1]];
 tSimplifyTop = AbsoluteTiming[resTop = BaikovGF`SimplifyBaikovCoefficient[rawTop];][[1]];
 tCompareTop = AbsoluteTiming[
@@ -84,6 +68,7 @@ tCompareTop = AbsoluteTiming[
 ][[1]];
 
 tBuildTypeII = AbsoluteTiming[gfTypeII = BaikovGF`BuildBaikovGeneratingFunction[family, typeIITarget];][[1]];
+mappingTypeII = mappingTextForGF[family, gfTypeII];
 tExtractTypeII = AbsoluteTiming[rawTypeII = BaikovGF`ExtractBaikovCoefficient[gfTypeII, {a1, a2} /. sourcePowerRule];][[1]];
 tSimplifyTypeII = AbsoluteTiming[resTypeII = BaikovGF`SimplifyBaikovCoefficient[rawTypeII];][[1]];
 tCompareTypeII = AbsoluteTiming[
@@ -151,7 +136,7 @@ nb = Notebook[
       tBuild1
     ],
     outputCell[tBuildTop],
-    Cell[mappingCellTextForGF[family, gfTop["Type"], gfTop["GeneratingFunctions"]["Current"]], "Text"],
+    Cell[mappingTop, "Text"],
 
     Cell["This step extracts the unsimplified coefficient and returns the runtime.", "Text"],
     inputCell[
@@ -185,7 +170,7 @@ nb = Notebook[
       tBuild2
     ],
     outputCell[tBuildTypeII],
-    Cell[mappingCellTextForGF[family, gfTypeII["Type"], gfTypeII["GeneratingFunctions"]["Current"]], "Text"],
+    Cell[mappingTypeII, "Text"],
 
     Cell["This step extracts the unsimplified coefficient and returns the runtime.", "Text"],
     inputCell[
